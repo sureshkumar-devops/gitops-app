@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - dev
-      -staging
+      - staging
 jobs:
   build:
    runs-on: ubuntu-latest
@@ -17,8 +17,8 @@ jobs:
     - name: Set Image Tag
       id: vars
       run: |
-       BRANCH_NAME=${{GITHUB_REF##*/}}    
-       SHORT_SHA=${{GITHUB_SHA::7}}
+       BRANCH_NAME=${GITHUB_REF##*/}    
+       SHORT_SHA=${GITHUB_SHA::7}
        echo "TAG=${BRANCH_NAME}-${SHORT_SHA}" >> $GITHUB_ENV
     
     - name: Login Docker Hub   
@@ -31,7 +31,8 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
+        file: ./Dockerfile  
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/gitops-demo:${{ env.TAG }}      
+        tags: ${{ vars.DOCKER_USERNAME }}/gitops-app:${{ env.TAG }}      
 
 
