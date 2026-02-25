@@ -33,6 +33,6 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/gitops-demo:${{ env.TAG }}      
+        tags: ${{ var.DOCKER_USERNAME }}/gitops-demo:${{ env.TAG }}      
 
 
