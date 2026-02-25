@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - dev
-      -staging
+      - staging
 jobs:
   build:
    runs-on: ubuntu-latest
