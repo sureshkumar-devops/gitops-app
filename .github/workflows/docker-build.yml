@@ -42,11 +42,11 @@ jobs:
     - name: Update Image Tags
       run: |
 
-        REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+        # REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
 
-        cd "$REPO_NAME"
-        ls -R
-        #cd /${{ github.repository }}
+        #cd "$REPO_NAME"
+        #ls -R
+        cd /${{ github.repository }}
 
         BRANCH_NAME=${GITHUB_REF##*/}
         
