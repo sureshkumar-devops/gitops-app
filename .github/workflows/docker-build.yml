@@ -56,6 +56,10 @@ jobs:
           TARGET_BRANCH="$BRANCH_NAME"
         fi
 
+        git fetch origin $TARGET_BRANCH
+
+        git checkout $TARGET_BRANCH
+
         if [ -f "environments/$ENV/values.yaml" ]; then
             echo "env.TAG"
             sed -i "s/tag:.*/tag: \"${{ env.TAG }}\"/" environments/$ENV/values.yaml
@@ -68,7 +72,7 @@ jobs:
         git config user.email "github-actions@github.com"
 
         git add environments/$ENV/values.yaml
-        git commit -m "Update $ENV Image to ${{ env.TAG }}"
+        git commit -m "Update $ENV Image to ${{ env.TAG }} [skip ci]" || echo "No changes"
 
         git pull --rebase -X theirs origin $TARGET_BRANCH
         git push origin $TARGET_BRANCH
