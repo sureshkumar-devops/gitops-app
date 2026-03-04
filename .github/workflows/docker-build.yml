@@ -39,7 +39,7 @@ jobs:
       run: |
         git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/${{github.actor}}/${{ github.repository }}
 
-    - name: Update Image Tag
+    - name: Update Image Tags
       run: |
         cd /${{ github.repository }}
 
