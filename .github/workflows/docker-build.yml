@@ -37,7 +37,7 @@ jobs:
 
     - name: Clone Gitops Repo
       run: |
-        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/${{ github.repository }}.git
+        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/${{ github.repository }}
 
     - name: Update Image Tags
       run: |
