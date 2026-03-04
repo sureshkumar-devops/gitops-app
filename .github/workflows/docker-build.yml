@@ -36,6 +36,10 @@ jobs:
         tags: ${{ vars.DOCKER_USERNAME }}/gitops-app:${{ env.TAG }}      
 
 
+    - name: Clone Gitops Repo
+      run: |
+        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/sureshkumar-devops/gitops-repo.git 
+
     - name: Update Image Tags
       run: |
 
