@@ -36,3 +36,45 @@ jobs:
         tags: ${{ vars.DOCKER_USERNAME }}/gitops-app:${{ env.TAG }}      
 
 
+    - name: Update Image Tags
+      run: |
+
+        REPO_NAME="gitops-repo"
+
+        cd "$REPO_NAME" || { echo "Directory $REPO_NAME not found"; exit 1; }
+
+        BRANCH_NAME=${GITHUB_REF##*/}
+        
+        if [ "$BRANCH_NAME" == "master" ]; then
+          ENV="prod"
+          TARGET_BRANCH="master"
+        else
+          ENV="$BRANCH_NAME"
+          TARGET_BRANCH="$BRANCH_NAME"
+        fi
+
+        git fetch origin $TARGET_BRANCH
+
+        git checkout $TARGET_BRANCH
+
+        if [ -f "environments/$ENV/values.yaml" ]; then
+            echo "env.TAG"
+            sed -i "s/tag:.*/tag: \"${{ env.TAG }}\"/" environments/$ENV/values.yaml
+        else
+           echo "Error: environments/$ENV/values.yaml not found!"
+          exit 1
+        fi      
+        
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+
+        git add environments/$ENV/values.yaml
+        git commit -m "Update $ENV Image to ${{ env.TAG }} [skip ci]" || echo "No changes..!"
+
+        git pull --rebase -X theirs origin $TARGET_BRANCH
+        git push origin $TARGET_BRANCH
+
+
+
+ 
+
