@@ -37,11 +37,15 @@ jobs:
 
     - name: Clone Gitops Repo
       run: |
-        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/${{ github.repository }}
+        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/${{ github.repository }}.git
 
     - name: Update Image Tags
       run: |
-        cd /${{ github.repository }}
+
+        REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+
+        cd "$REPO_NAME"
+        #cd /${{ github.repository }}
 
         BRANCH_NAME=${GITHUB_REF##*/}
         
