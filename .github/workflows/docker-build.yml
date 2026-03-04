@@ -56,16 +56,23 @@ jobs:
           ENV="$BRANCH_NAME"
           TARGET_BRANCH="$BRANCH_NAME"
         fi
-   
-        sed -i "s/tag:.*/tag: \"${{ env.TAG }}\"/" environments/$ENV/values.yaml
+
+        if [ -f "environments/$ENV/values.yaml" ]; then
+            sed -i "s/tag:.*/tag: \"${{ env.TAG }}\"/" environments/$ENV/values.yaml
+        else
+           echo "Error: environments/$ENV/values.yaml not found!"
+          exit 1
+        fi      
         
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
 
-        git add .
+        git add environments/$ENV/values.yaml
         git commit -m "Update $ENV Image to ${{ env.TAG }}"
 
+        git pull --rebase -X theirs origin $TARGET_BRANCH
         git push origin $TARGET_BRANCH
+
 
 
  
