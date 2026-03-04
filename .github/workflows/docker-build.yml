@@ -37,11 +37,14 @@ jobs:
 
     - name: Clone Gitops Repo
       run: |
-        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/${{github.actor}}/${{ github.repository }}
+        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/sureshkumar-devops/gitops-repo.git
 
-    - name: Update Image Tag
+    - name: Update Image Tags
       run: |
-        cd /${{ github.repository }}
+
+        REPO_NAME="gitops-repo"
+
+        cd "$REPO_NAME" || { echo "Directory $REPO_NAME not found"; exit 1; }
 
         BRANCH_NAME=${GITHUB_REF##*/}
         
@@ -52,16 +55,28 @@ jobs:
           ENV="$BRANCH_NAME"
           TARGET_BRANCH="$BRANCH_NAME"
         fi
-   
-        sed -i "s/tag:.*/tag: \"${{ env.TAG }}\"/" environments/$ENV/values.yaml
+
+        git fetch origin $TARGET_BRANCH
+
+        git checkout $TARGET_BRANCH
+
+        if [ -f "environments/$ENV/values.yaml" ]; then
+            echo "env.TAG"
+            sed -i "s/tag:.*/tag: \"${{ env.TAG }}\"/" environments/$ENV/values.yaml
+        else
+           echo "Error: environments/$ENV/values.yaml not found!"
+          exit 1
+        fi      
         
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
 
-        git add .
-        git commit -m "Update $ENV Image to ${{ env.TAG }}"
+        git add environments/$ENV/values.yaml
+        git commit -m "Update $ENV Image to ${{ env.TAG }} [skip ci]" || echo "No changes"
 
+        git pull --rebase -X theirs origin $TARGET_BRANCH
         git push origin $TARGET_BRANCH
+
 
 
  
