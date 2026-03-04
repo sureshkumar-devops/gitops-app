@@ -58,6 +58,7 @@ jobs:
         fi
 
         if [ -f "environments/$ENV/values.yaml" ]; then
+            echo "env.TAG"
             sed -i "s/tag:.*/tag: \"${{ env.TAG }}\"/" environments/$ENV/values.yaml
         else
            echo "Error: environments/$ENV/values.yaml not found!"
