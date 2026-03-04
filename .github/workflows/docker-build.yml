@@ -37,12 +37,14 @@ jobs:
 
     - name: Clone Gitops Repo
       run: |
-        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/${{ github.repository_owner }}/gitops-repo.git
+        git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/sureshkumar-devops/gitops-repo.git
 
     - name: Update Image Tags
       run: |
 
-        cd /${{ github.repository }}
+        REPO_NAME="gitops-repo"
+
+        cd "$REPO_NAME" || { echo "Directory $REPO_NAME not found"; exit 1; }
 
         BRANCH_NAME=${GITHUB_REF##*/}
         
