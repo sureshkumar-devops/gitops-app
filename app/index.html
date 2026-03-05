@@ -60,9 +60,10 @@
 <body>
 
 <div class="container">
-    <h1>Welcome to GitOps CI/CD Demo</h1>
-    <p>Environment: <span class="info-tag">DEV</span></p>
-    <p>Branch: <span class="info-tag">dev</span></p>
+     <h1>Welcome to GitOps CI/CD Demo</h1>
+    <!-- These placeholders will be replaced by the CI/CD pipeline -->
+    <p>Environment: <span class="info-tag">${DEPLOY_ENV}</span></p>
+    <p>Branch: <span class="info-tag">${GIT_BRANCH}</span></p>
 
     <div class="button-group">
         <button class="btn btn-blue">View Logs</button>
