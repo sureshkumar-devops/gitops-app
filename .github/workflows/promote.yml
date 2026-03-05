@@ -25,19 +25,33 @@ jobs:
         echo "${{ github.event.inputs.target }}"
         
         if [ "${{ github.event.inputs.target }}" == "staging" ]; then
-           SRC=dev
-           DEST=staging
+           SRC_BRANCH="dev"           
+           DEST_BRANCH="staging"
+           SRC_ENV="dev"           
+           DEST_ENV="staging"
         else
-           SRC=staging
-           DEST=prod
+          SRC_BRANCH="staging"
+          DEST_BRANCH="master"
+          SRC_ENV="staging"
+          DEST_ENV="prod"
         fi
 
-        IMAGE_TAG=$(grep 'tag:' environments/$SRC/values.yaml | awk '{print $2}' | tr -d '"')        
+        echo "Source Branch: $SRC_BRANCH"
+        echo "Destination Branch: $DEST_BRANCH" 
+
+        echo "Source Environment: $SRC_ENV"
+        echo "Destination Environment: $DEST_ENV"
+
+        git fetch origin
+
+        git checkout $DEST_BRANCH
+        
+        IMAGE_TAG=$(grep 'tag:' environments/$SRC_ENV/values.yaml | awk '{print $2}' | tr -d '"')        
         echo $IMAGE_TAG
 
-        echo "Promoting $IMAGE_TAG from $SRC → $DEST"
+        echo "Promoting $IMAGE_TAG from $SRC_ENV → $DEST_ENV"
 
-        sed -i "s/tag:.*/tag: \"$IMAGE_TAG\"/" environments/$DEST/values.yaml   
+        sed -i "s/tag:.*/tag: \"$IMAGE_TAG\"/" environments/$DEST_ENV/values.yaml   
         echo $IMAGE_TAG
 
     - name: Commit Changes
