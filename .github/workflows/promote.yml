@@ -1,0 +1,53 @@
+name: Promote Image
+
+on: 
+ workflow_dispatch:
+   inputs:
+     target:
+       description: "Promotion Target"
+       required: true
+       type: choice
+       options:
+          - staging
+          - prod  
+
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout GitOps Code
+      uses: actions/checkout@v4
+      with:
+        repository: sureshkumar-devops/gitops-repo
+        token: ${{ secrets.GITOPS_TOKEN }}   
+
+    - name: Promote Image
+      run: |
+
+        if [ "${{ github.event.inputs.target }}" == "staging" ]; then
+           SRC=dev
+           DEST=staging
+        else
+           SRC=staging
+           DEST=prod
+        fi
+
+        IMAGE_TAG=$(grep tag environments/$SRC/values.yaml | awk '{print $2}' | tr -d'"')
+
+        echo "Promoting $IMAGE_TAG from $SRC → $DEST"
+
+        sed -i "s/tag:.*/tag: \"$IMAGE_TAG\"/" environments/$DEST/values.yaml
+
+    - name: Commit Changes
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+
+        git add environments
+        git commit -m "Promote image to ${{ github.event.inputs.target }}"
+        git push
+
+
