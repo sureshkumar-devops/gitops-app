@@ -10,14 +10,10 @@ on:
        options:
           - staging
           - prod  
-
-
 jobs:
   promote:
     runs-on: ubuntu-latest
-
     steps:
-
     - name: Checkout GitOps Code
       uses: actions/checkout@v4
       with:
@@ -26,7 +22,7 @@ jobs:
 
     - name: Promote Image
       run: |
-
+        echo "${{ github.event.inputs.target }}"
         if [ "${{ github.event.inputs.target }}" == "staging" ]; then
            SRC=dev
            DEST=staging
