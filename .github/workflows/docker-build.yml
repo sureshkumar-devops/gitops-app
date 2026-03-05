@@ -23,15 +23,16 @@ jobs:
        
        # Set ENV for the HTML injection step
        if [ "$BRANCH_NAME" == "master" ]; then 
-          echo "DEPLOY_TARGE=prod" >> $GITHUB_ENV; 
+          echo "DEPLOY_TARGET=prod" >> $GITHUB_ENV; 
        else 
-          echo "DEPLOY_TARGE=$BRANCH_NAME" >> $GITHUB_ENV; 
+          echo "DEPLOY_TARGET=$BRANCH_NAME" >> $GITHUB_ENV; 
        fi
     
     - name: Inject Environment Variables into HTML
       run: |
-        export DEPLOY_ENV=$DEPLOY_TARGE
+        export DEPLOY_ENV=$DEPLOY_TARGET
         export GIT_BRANCH="${{ github.ref_name }}"
+        export TAG=$TAG
         # Point to the app/ directory        
         envsubst < app/index.html > app/index.tmp.html && mv app/index.tmp.html app/index.html
     
