@@ -31,8 +31,8 @@ jobs:
            DEST=prod
         fi
 
-        IMAGE_TAG=$(grep tag environments/$SRC/values.yaml | awk '{print $2}' | tr -d'"')
-
+        IMAGE_TAG=$(grep tag environments/$SRC/values.yaml | awk '{print $2}' | tr -d '"')
+        echo $IMAGE_TAG
         echo "Promoting $IMAGE_TAG from $SRC → $DEST"
 
         sed -i "s/tag:.*/tag: \"$IMAGE_TAG\"/" environments/$DEST/values.yaml
